@@ -1,7 +1,7 @@
 package models
 
 type Account struct {
-	UUID     string  `json:"uuid,omitempty"`
+	Id       string  `json:"id" binding:"required"`
 	Telegram *string `json:"telegram,omitempty"`
 	Email    *string `json:"email,omitempty"`
 }

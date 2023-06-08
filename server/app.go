@@ -2,6 +2,10 @@ package server
 
 import (
 	_ "Notifications/docs"
+	"Notifications/internal/account"
+	accounthttp "Notifications/internal/account/delivery/http"
+	accountrepo "Notifications/internal/account/repository/postgres"
+	accountusecase "Notifications/internal/account/usecase"
 	"Notifications/internal/config"
 	"Notifications/internal/notification"
 	notificationhttp "Notifications/internal/notification/delivery/http"
@@ -27,6 +31,8 @@ type App struct {
 	httpServer *http.Server
 
 	notificationUC notification.UseCase
+
+	accountUC account.UseCase
 }
 
 func NewApp(cfg *config.Config) *App {
@@ -37,10 +43,14 @@ func NewApp(cfg *config.Config) *App {
 	if err != nil {
 		logrus.Fatalf("Problem with connection to db, err= %s", err)
 	}
+
 	notificationRepo := notificationrepo.NewRepository(db)
+	accountRepo := accountrepo.NewAccountRepository(db)
+
 	return &App{
 		httpServer:     nil,
 		notificationUC: notificationusecase.NewUseCase(notificationRepo),
+		accountUC:      accountusecase.NewAccountUseCase(accountRepo),
 	}
 }
 
@@ -67,6 +77,9 @@ func (a *App) Run(port string) error {
 
 	notificationApi := api.Group("/notification")
 	notificationhttp.RegisterHTTPEndpoints(notificationApi, a.notificationUC)
+
+	accountApi := api.Group("/account")
+	accounthttp.RegisterHTTPEndpoints(accountApi, a.accountUC)
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
