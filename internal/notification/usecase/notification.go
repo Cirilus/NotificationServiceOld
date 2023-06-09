@@ -4,6 +4,7 @@ import (
 	"Notifications/internal/models"
 	"Notifications/internal/notification"
 	"context"
+	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 )
 
@@ -67,4 +68,21 @@ func (n NotificationUseCase) NotificationsByUser(ctx context.Context, id string)
 		return nil, err
 	}
 	return notificationByUser, nil
+}
+
+func (n NotificationUseCase) AddNotificationToAccount(ctx context.Context, notificationId uuid.UUID, accountId []uuid.UUID) error {
+	err := n.repo.AddNotificationToAccount(ctx, notificationId, accountId)
+	if err != nil {
+		logrus.Error("Notification - UseCase - AddNotificationToAccount")
+		return err
+	}
+	return nil
+}
+func (n NotificationUseCase) DeleteNotificationFromAccount(ctx context.Context, notificationId uuid.UUID, accountId uuid.UUID) error {
+	err := n.repo.DeleteNotificationFromAccount(ctx, notificationId, accountId)
+	if err != nil {
+		logrus.Error("Notification - UseCase - DeleteNotificationFromAccount")
+		return err
+	}
+	return nil
 }

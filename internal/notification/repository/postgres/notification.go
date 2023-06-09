@@ -155,3 +155,23 @@ func (n NotificationRepository) GetNotificationsByUser(ctx context.Context, id s
 
 	return notifications, nil
 }
+
+func (n NotificationRepository) AddNotificationToAccount(ctx context.Context, notificationId uuid.UUID, accountId []uuid.UUID) error {
+	sql := `INSERT INTO account_notification(notification_id, account_id) SELECT $1, id FROM account WHERE id = ANY($2)`
+	_, err := n.Pool.Exec(ctx, sql, notificationId, accountId)
+	if err != nil {
+		logrus.Error("Notification - Repository - AddNotificationToAccount")
+		return err
+	}
+	return nil
+}
+
+func (n NotificationRepository) DeleteNotificationFromAccount(ctx context.Context, notificationId uuid.UUID, accountId uuid.UUID) error {
+	sql := "DELETE FROM account_notification WHERE notification_id = $1 and account_id = $2"
+	_, err := n.Pool.Exec(ctx, sql, notificationId, accountId)
+	if err != nil {
+		logrus.Error("Notification - Repository - DeleteNotificationFromAccount")
+		return err
+	}
+	return nil
+}
