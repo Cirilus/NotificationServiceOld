@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// TODO Add the delete, update endpoints
+
 type Repository interface {
 	GetAccountById(ctx context.Context, id string) (*models.Account, error)
 	GetAllAccounts(ctx context.Context) ([]models.Account, error)
