@@ -4,6 +4,7 @@ import (
 	"Notifications/internal/account"
 	"Notifications/internal/models"
 	"context"
+	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 )
 
@@ -40,4 +41,22 @@ func (a AccountUseCase) CreateAccount(ctx context.Context, account models.Accoun
 		return err
 	}
 	return nil
+}
+
+func (a AccountUseCase) DeleteAccount(ctx context.Context, id uuid.UUID) error {
+	err := a.repo.DeleteAccount(ctx, id)
+	if err != nil {
+		logrus.Error("Account - UseCase - DeleteAccount")
+		return err
+	}
+	return nil
+}
+
+func (a AccountUseCase) UpdateAccount(ctx context.Context, id uuid.UUID, account models.UpdateAccount) (*models.Account, error) {
+	updateAccount, err := a.repo.UpdateAccount(ctx, id, account)
+	if err != nil {
+		logrus.Error("Account - UseCase - UpdateAccount")
+		return nil, err
+	}
+	return updateAccount, err
 }

@@ -7,3 +7,9 @@ type Account struct {
 	Telegram *string   `json:"telegram,omitempty"`
 	Email    *string   `json:"email,omitempty"`
 }
+
+type UpdateAccount struct {
+	Id       *uuid.UUID `json:"id"`
+	Telegram *string    `json:"telegram,omitempty"`
+	Email    *string    `json:"email,omitempty"`
+}
