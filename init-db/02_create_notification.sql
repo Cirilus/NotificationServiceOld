@@ -4,5 +4,6 @@ CREATE TABLE IF NOT EXISTS notification (
     body text not null,
     Execution date not null,
     telegram text null,
-    email text null
+    email text null,
+	is_sent bool default false
 );
