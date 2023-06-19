@@ -1,5 +1,5 @@
 FROM python:3.10
 
-COPY . .
+COPY email .
 
 CMD ["python", "main.py"]

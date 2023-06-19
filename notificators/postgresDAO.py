@@ -13,19 +13,19 @@ class PostgresDAO:
         self._cursor = self._connection.cursor()
         logger.info("Successfully connected to db")
 
-    def take_user_mails(self, time):
-        user_mails = []
-        sql = f"SELECT n.id, COALESCE(a.email, n.email), n.title, n.body as email \
+    def take_user_contacts(self, time):
+        user_contacts = []
+        sql = f"SELECT n.id, COALESCE(a.email, n.email) as email, COALESCE(a.telegram, n.telegram) as telegram, n.title, n.body \
             FROM notification n \
             LEFT JOIN account_notification an on n.id = an.notification_id \
             LEFT JOIN account a on a.id = an.account_id \
             WHERE n.execution < %s and n.is_sent = false;"
         try:
             self._cursor.execute(sql, [time])
-            user_mails = self._cursor.fetchall()
+            user_contacts = self._cursor.fetchall()
         except Exception as e:
             logger.error(f"Cannot take the user contacts with time {time}, err= {e}")
-        return user_mails
+        return user_contacts
 
     def set_sent(self, ids: List[str]):
         sql = "UPDATE notification SET is_sent=true WHERE id=ANY(%s::uuid[]);"

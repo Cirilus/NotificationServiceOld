@@ -1,1 +1,0 @@
-from .register_webhooks import register
