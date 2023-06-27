@@ -1,13 +1,8 @@
-import os
-
 from aiohttp import web
-from dotenv import load_dotenv
 from loguru import logger
-from aiogram import types
-
-from telegram.TelegramBot.create_bot import bot, dp, app, TOKEN_API
+from create_bot import bot, dp, app, TOKEN_API
 from handlers import client, webhook
-
+import middleware
 
 webhook_path = f'/{TOKEN_API}'
 
@@ -15,7 +10,7 @@ logger.level("DEBUG")
 
 
 async def set_webhook():
-    webhook_uri = f'https://9760-185-119-0-221.eu.ngrok.io{webhook_path}'
+    webhook_uri = f'https://a507-185-119-0-221.eu.ngrok.io{webhook_path}'
     await bot.set_webhook(
         webhook_uri
     )
@@ -28,6 +23,7 @@ async def on_startup(_):
 
 client.register_client.register(dp)
 webhook.register_webhooks.register(app)
+middleware.register_middleware.register(dp)
 
 app.on_startup.append(on_startup)
 logger.info("Running the app")

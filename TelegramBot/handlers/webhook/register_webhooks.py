@@ -1,6 +1,6 @@
 from aiohttp import web
 from loguru import logger
-from telegram.TelegramBot.create_bot import TOKEN_API
+from create_bot import TOKEN_API
 from .handlers import main, notify
 
 
