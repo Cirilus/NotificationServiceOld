@@ -3,7 +3,7 @@ from aiogram.dispatcher import FSMContext
 from loguru import logger
 from KeyBoards import start as KB
 from .FSMMachines import FSMAuth
-from create_bot import db
+from create_bot import db, kc
 
 
 async def cmd_start(message: types.Message) -> None:
@@ -27,17 +27,14 @@ async def login_email(message: types.Message, state: FSMContext):
     await message.answer("Введите ваш пароль")
 
 
-def authenticate(user: str, password: str) -> str | None:
-    return None
-
-
 async def login_password(message: types.Message, state: FSMContext):
     await state.finish()
     async with state.proxy() as data:
         data["password"] = message.text
-        user_id = authenticate(data["email"], data["password"])
-        if user_id is None:
+        token = kc.token(username=data["email"], password=data["password"])
+        user = kc.decode_token(token)
+        if token is None:
             await message.answer("The authentication error")
             return
         telegram_id = data["id"]
-        db.set_id(user_id, telegram_id)
+        db.set_id(user["id"], telegram_id)

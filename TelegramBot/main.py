@@ -1,23 +1,21 @@
 from aiohttp import web
 from loguru import logger
-from create_bot import bot, dp, app, TOKEN_API
+from create_bot import bot, dp, app, TOKEN_API, WEBHOOK_DOMAIN
 from handlers import client, webhook
 import middleware
-
-webhook_path = f'/{TOKEN_API}'
 
 logger.level("DEBUG")
 
 
 async def set_webhook():
-    webhook_uri = f'https://a507-185-119-0-221.eu.ngrok.io{webhook_path}'
+    webhook_uri = f'{WEBHOOK_DOMAIN}/{TOKEN_API}'
     await bot.set_webhook(
         webhook_uri
     )
 
 
 async def on_startup(_):
-    logger.info("Setting the webhooks")
+    logger.info("Setting the webhook")
     await set_webhook()
 
 
