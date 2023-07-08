@@ -4,3 +4,8 @@ postgresql:
   host:
   port:
   database:
+
+keycloak:
+  url:
+  realm:
+  fullCertsPath:

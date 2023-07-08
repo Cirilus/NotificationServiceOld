@@ -14,6 +14,11 @@ type Config struct {
 		Port     string `yaml:"port" env:"PSQL_PORT" env-required:"true"`
 		Database string `yaml:"database" env:"PSQL_DATABASE" env-required:"true"`
 	} `yaml:"postgresql"`
+	Keycloak struct {
+		Url           string `yaml:"url" env-required:"true"`
+		Realm         string `yaml:"realm" env-required:"true"`
+		FullCertsPath string `yaml:"fullCertsPath" env-required:"false"`
+	} `yaml:"keycloak"`
 }
 
 var instance *Config

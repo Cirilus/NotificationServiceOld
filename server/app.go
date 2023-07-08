@@ -54,8 +54,6 @@ func NewApp(cfg *config.Config) *App {
 	}
 }
 
-// TODO the notificators(telegram, email)
-
 // Run @title Golang Init
 // @version 1.0
 // @description This is init

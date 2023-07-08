@@ -4,6 +4,7 @@ from loguru import logger
 from KeyBoards import start as KB
 from .FSMMachines import FSMAuth
 from create_bot import db, kc
+from keycloak.exceptions import KeycloakAuthenticationError
 
 
 async def cmd_start(message: types.Message) -> None:
@@ -28,13 +29,17 @@ async def login_email(message: types.Message, state: FSMContext):
 
 
 async def login_password(message: types.Message, state: FSMContext):
-    await state.finish()
     async with state.proxy() as data:
         data["password"] = message.text
-        token = kc.token(username=data["email"], password=data["password"])
-        user = kc.decode_token(token)
-        if token is None:
+        try:
+            token = kc.token(username=data["email"], password=data["password"])
+        except KeycloakAuthenticationError:
             await message.answer("The authentication error")
+            await state.finish()
             return
-        telegram_id = data["id"]
-        db.set_id(user["id"], telegram_id)
+        user = kc.userinfo(token['access_token'])
+        print(user)
+        telegram_id = data["sub"]
+        db.set_id(user["sub"], telegram_id)
+    await state.finish()
+
