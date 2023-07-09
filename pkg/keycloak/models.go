@@ -8,7 +8,7 @@ type Token struct {
 	Nbf               int64                  `json:"nbf"`
 	Iat               int64                  `json:"iat"`
 	Iss               string                 `json:"iss"`
-	Sub               string                 `json:"sub"`
+	Sub               string                 `json:"sub"` // id
 	Typ               string                 `json:"typ"`
 	Azp               string                 `json:"azp,omitempty"`
 	Nonce             string                 `json:"nonce,omitempty"`

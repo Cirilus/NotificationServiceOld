@@ -1,6 +1,7 @@
 package keycloak
 
 import (
+	"context"
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rsa"
@@ -238,17 +239,18 @@ func authChain(config Config, accessCheckFunctions ...AccessCheckFunction) gin.H
 		go func() {
 			tokenContainer, ok := getTokenContainer(ctx, config)
 			if !ok {
-				_ = ctx.AbortWithError(http.StatusUnauthorized, errors.New("No token in context"))
+				_ = ctx.AbortWithError(http.StatusUnauthorized, errors.New("no token in context"))
 				varianceControl <- false
 				return
 			}
 
 			if !tokenContainer.Valid() {
-				_ = ctx.AbortWithError(http.StatusUnauthorized, errors.New("Invalid Token"))
+				_ = ctx.AbortWithError(http.StatusUnauthorized, errors.New("invalid Token"))
 				varianceControl <- false
 				return
 			}
-			ctx.Set("", tokenContainer.KeyCloakToken)
+			ctx.Request = ctx.Request.WithContext(context.WithValue(ctx.Request.Context(), "token", tokenContainer.KeyCloakToken))
+			ctx.Next()
 			for _, fn := range accessCheckFunctions {
 				if fn(tokenContainer, ctx) {
 					varianceControl <- true

@@ -13,6 +13,7 @@ import (
 	notificationusecase "Notifications/internal/notification/usecase"
 	"Notifications/pkg/client/postgresql"
 	"Notifications/pkg/health_check"
+	"Notifications/pkg/keycloak"
 	"context"
 	"fmt"
 	"github.com/gin-contrib/cors"
@@ -33,6 +34,8 @@ type App struct {
 	notificationUC notification.UseCase
 
 	accountUC account.UseCase
+
+	conf *config.Config
 }
 
 func NewApp(cfg *config.Config) *App {
@@ -51,6 +54,7 @@ func NewApp(cfg *config.Config) *App {
 		httpServer:     nil,
 		notificationUC: notificationusecase.NewUseCase(notificationRepo),
 		accountUC:      accountusecase.NewAccountUseCase(accountRepo),
+		conf:           cfg,
 	}
 }
 
@@ -75,10 +79,19 @@ func (a *App) Run(port string) error {
 
 	api := router.Group("/api")
 
+	keycloakConfig := keycloak.Config{
+		Url:                a.conf.Keycloak.Url,
+		Realm:              a.conf.Keycloak.Realm,
+		FullCertsPath:      a.conf.Keycloak.FullCertsPath,
+		CustomClaimsMapper: nil,
+	}
+
 	notificationApi := api.Group("/notification")
+	notificationApi.Use(keycloak.Auth(keycloak.AuthCheck(), keycloakConfig))
 	notificationhttp.RegisterHTTPEndpoints(notificationApi, a.notificationUC)
 
 	accountApi := api.Group("/account")
+	accountApi.Use(keycloak.Auth(keycloak.AuthCheck(), keycloakConfig))
 	accounthttp.RegisterHTTPEndpoints(accountApi, a.accountUC)
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

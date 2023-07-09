@@ -4,6 +4,7 @@ import (
 	"Notifications/internal/models"
 	"Notifications/pkg/client/postgresql"
 	"context"
+	"fmt"
 	"github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
@@ -97,12 +98,13 @@ func (n NotificationRepository) GetNotificationById(ctx context.Context, id stri
 }
 
 func (n NotificationRepository) GetAllNotifications(ctx context.Context) ([]models.Notification, error) {
-
 	sql := `SELECT notification.id, title, body, telegram, email, execution, array_agg(an.account_id) as account_ids
 	FROM notification LEFT JOIN account_notification an on notification.id = an.notification_id
 	GROUP BY notification.id, title, body, telegram, email, execution;`
 
 	notifications := make([]models.Notification, 0)
+
+	fmt.Printf("\ntoken = %v\n", ctx.Value("token"))
 
 	rows, err := n.Pool.Query(ctx, sql)
 	if err != nil {

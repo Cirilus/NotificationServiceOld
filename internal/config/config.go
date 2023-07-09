@@ -15,9 +15,9 @@ type Config struct {
 		Database string `yaml:"database" env:"PSQL_DATABASE" env-required:"true"`
 	} `yaml:"postgresql"`
 	Keycloak struct {
-		Url           string `yaml:"url" env-required:"true"`
-		Realm         string `yaml:"realm" env-required:"true"`
-		FullCertsPath string `yaml:"fullCertsPath" env-required:"false"`
+		Url           string  `yaml:"url" env-required:"true"`
+		Realm         string  `yaml:"realm" env-required:"true"`
+		FullCertsPath *string `yaml:"fullCertsPath"`
 	} `yaml:"keycloak"`
 }
 
