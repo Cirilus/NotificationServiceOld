@@ -3,6 +3,7 @@ package usecase
 import (
 	"Notifications/internal/account"
 	"Notifications/internal/models"
+	"Notifications/pkg/keycloak"
 	"context"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
@@ -25,6 +26,16 @@ func (a AccountUseCase) AccountById(ctx context.Context, id string) (*models.Acc
 	return accountById, nil
 }
 
+func (a AccountUseCase) UserAccount(ctx context.Context) (*models.Account, error) {
+	id := ctx.Value("token").(*keycloak.Token).Sub
+	accountById, err := a.repo.GetAccountById(ctx, id)
+	if err != nil {
+		logrus.Error("Account - UseCase - AccountById")
+		return nil, err
+	}
+	return accountById, nil
+}
+
 func (a AccountUseCase) AllAccounts(ctx context.Context) ([]models.Account, error) {
 	allAccounts, err := a.repo.GetAllAccounts(ctx)
 	if err != nil {
@@ -35,6 +46,19 @@ func (a AccountUseCase) AllAccounts(ctx context.Context) ([]models.Account, erro
 }
 
 func (a AccountUseCase) CreateAccount(ctx context.Context, account models.Account) error {
+	if account.Id == nil {
+		token := ctx.Value("token").(*keycloak.Token)
+		id, err := uuid.Parse(token.Sub)
+		if err != nil {
+			logrus.Error("Cannot convert id from string to uuid")
+			return err
+		}
+		account.Id = &id
+	}
+	if account.Email == nil {
+		token := ctx.Value("token").(*keycloak.Token)
+		account.Email = &token.Email
+	}
 	err := a.repo.CreateAccount(ctx, account)
 	if err != nil {
 		logrus.Error("Account - UseCase - CreateAccount")
@@ -52,10 +76,10 @@ func (a AccountUseCase) DeleteAccount(ctx context.Context, id uuid.UUID) error {
 	return nil
 }
 
-func (a AccountUseCase) UpdateAccount(ctx context.Context, id uuid.UUID, account models.UpdateAccount) (*models.Account, error) {
+func (a AccountUseCase) UpdateAccount(ctx context.Context, id uuid.UUID, account models.Account) (*models.Account, error) {
 	updateAccount, err := a.repo.UpdateAccount(ctx, id, account)
 	if err != nil {
-		logrus.Error("Account - UseCase - UpdateAccount")
+		logrus.Error("Account - UseCase - Account")
 		return nil, err
 	}
 	return updateAccount, err

@@ -53,6 +53,23 @@ func (h Handler) AccountById(c *gin.Context) {
 	c.JSON(http.StatusOK, accountById)
 }
 
+// @Summary Return account by id
+// @Tags account
+// @Accept  json
+// @Produce json
+// @Success 201 {object} models.Account
+// @Failure 500
+// @Router /api/account/me [get]
+func (h Handler) UserAccount(c *gin.Context) {
+	userAccount, err := h.uc.UserAccount(c.Request.Context())
+	if err != nil {
+		logrus.Error(err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+	c.JSON(http.StatusOK, userAccount)
+}
+
 // @Summary Create the Account
 // @Tags account
 // @Accept  json
@@ -122,7 +139,7 @@ func (h Handler) UpdateAccount(c *gin.Context) {
 		return
 	}
 
-	inp := new(models.UpdateAccount)
+	inp := new(models.Account)
 	err = c.BindJSON(inp)
 	if err != nil {
 		logrus.Errorf("Bad request = %s", err)
