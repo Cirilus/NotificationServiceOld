@@ -27,5 +27,5 @@ app.on_startup.append(on_startup)
 logger.info("Running the app")
 web.run_app(app,
             host='0.0.0.0',
-            port=8000)
+            port=3000)
 

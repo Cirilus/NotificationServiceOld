@@ -10,6 +10,22 @@ services:
       - "8000:8000"
     command: "./main"
 
+  telegram_bot:
+    build:
+      context: ./TelegramBot
+      dockerfile: Dockerfile
+    container_name: telegram_bot
+    ports:
+      - "3000:3000"
+    command: sh -c "python main.py"
+
+  notificator:
+    build:
+      context: ./TelegramBot
+      dockerfile: Dockerfile
+    container_name: notificator
+    command: sh -c "python main.py"
+
   postgres:
     image: postgres:latest
     container_name: postgres
@@ -48,3 +64,6 @@ services:
 
 volumes:
   postgres_storage:
+
+networks:
+  default:
