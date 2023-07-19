@@ -3,3 +3,5 @@ docs
 config.yml.example
 main
 test.http
+db/migrations/atlas.sum
+*.example

@@ -38,11 +38,15 @@ type App struct {
 	conf *config.Config
 }
 
+// postgresql://postgres:postgres@5.42.75.12:5432/postgresql
 func NewApp(cfg *config.Config) *App {
 	logrus.Info("Connecting to db")
 	db, err := postgresql.New(fmt.Sprintf("postgresql://%s:%s@%s:%s?sslmode=disable",
 		cfg.PostgreSQL.Username, cfg.PostgreSQL.Password,
 		cfg.PostgreSQL.Host, cfg.PostgreSQL.Port))
+	logrus.Infof("postgresql://%s:%s@%s:%s?sslmode=disable",
+		cfg.PostgreSQL.Username, cfg.PostgreSQL.Password,
+		cfg.PostgreSQL.Host, cfg.PostgreSQL.Port)
 	if err != nil {
 		logrus.Fatalf("Problem with connection to db, err= %s", err)
 	}

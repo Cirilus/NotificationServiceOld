@@ -7,7 +7,7 @@ from loguru import logger
 
 class PostgresDAO:
     def __init__(self, user, password, host, port="5432", database="postgres"):
-        logger.debug(f"Connecting to db with user={user} password={password} host={host} port={port} database={database}")
+        logger.debug(f"Connecting to db")
         self._connection = psycopg2.connect(user=user, password=password,
                                             host=host, port=port, database=database)
         self._cursor = self._connection.cursor()

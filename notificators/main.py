@@ -33,7 +33,7 @@ db = PostgresDAO(db_user, db_password, db_host, db_port, db_database)
 while True:
     user_contacts = db.take_user_contacts(datetime.date.today())
     sent_ids = []
-    logger.info(f"take {len(user_contacts)} for sending")
+    logger.info(f"take {len(user_contacts)} message for sending")
     for user_contact in user_contacts:
         user_id = user_contact[0]
         email = user_contact[1]
@@ -42,10 +42,10 @@ while True:
         body = user_contact[4]
         try:
             if email:
-                logger.debug(f"Sending message to email {email} with subject {subject} and with body {body}")
+                logger.debug(f"Sending message to email {email}")
                 email_manager.send_message(email, subject, body)
             if telegram:
-                logger.debug(f"Sending message to telegram user {telegram} with subject {subject} and with body {body}")
+                logger.debug(f"Sending message to telegram user {telegram}")
                 telegram_manager.sent_notification(telegram, subject, body)
             sent_ids.append(user_id)
         except Exception as e:
@@ -54,4 +54,4 @@ while True:
         db.set_sent(sent_ids)
     except Exception as e:
         logger.error(f"cannot set is_sent flag, err= {e}")
-    time.sleep(30)
+    time.sleep(20)
