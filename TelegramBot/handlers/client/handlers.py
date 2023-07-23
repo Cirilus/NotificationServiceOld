@@ -38,8 +38,14 @@ async def login_password(message: types.Message, state: FSMContext):
             await state.finish()
             return
         user = kc.userinfo(token['access_token'])
-        print(user)
-        telegram_id = data["sub"]
-        db.set_id(user["sub"], telegram_id)
+        telegram_id = data["id"]
+        try:
+            db.set_id(user["sub"], telegram_id)
+        except Exception as e:
+            logger.error(f"Cannot set telegram id {telegram_id} to the user {user_id}, err={e}")
+            await message.answer("The authentication error")
+            await state.finish()
+            return
+    message.answer("You are logged in")
     await state.finish()
 

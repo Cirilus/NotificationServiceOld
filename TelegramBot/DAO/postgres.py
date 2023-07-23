@@ -11,11 +11,8 @@ class PostgresDao:
         logger.info("Successfully connected to db")
 
     def set_id(self, user_id, telegram_id):
-        sql = "INSERT INTO account (id, telegram) VALUES ($1, $2)" \
+        sql = "INSERT INTO account (id, telegram) VALUES (%s, %s)" \
               "ON CONFLICT (id) DO UPDATE " \
-              "SET telegram = $2"
-        try:
-            self._cursor.execute(sql, user_id, telegram_id)
-            self._connection.commit()
-        except Exception as e:
-            logger.error(f"Cannot set telegram id {telegram_id} to the user {user_id}, err={e}")
+              "SET telegram = %s;"
+        self._cursor.execute(sql, (user_id, telegram_id, telegram_id))
+        self._connection.commit()

@@ -17,7 +17,7 @@ email_password = os.getenv("EMAIL_PASSWORD")
 
 telegram_domain = os.getenv("TELEGRAM_DOMAIN")
 telegram_token = os.getenv("TELEGRAM_TOKEN")
-telegram_url = telegram_domain + "/" + telegram_token + "/" + "notify"
+telegram_url = (telegram_domain + "/" + telegram_token + "/" + "notify").strip()
 
 db_user = os.getenv("DB_USER")
 db_password = os.getenv("DB_PASSWORD")
@@ -27,11 +27,12 @@ db_database = os.getenv("DB_DATABASE")
 
 
 email_manager = EmailSender(email, email_password)
-telegram_manager = TelegramManager(telegram_url, telegram_token)
+print(telegram_url)
+telegram_manager = TelegramManager(telegram_token, telegram_url)
 db = PostgresDAO(db_user, db_password, db_host, db_port, db_database)
 
 while True:
-    user_contacts = db.take_user_contacts(datetime.date.today())
+    user_contacts = db.take_user_contacts(datetime.datetime.today())
     sent_ids = []
     logger.info(f"take {len(user_contacts)} message for sending")
     for user_contact in user_contacts:
