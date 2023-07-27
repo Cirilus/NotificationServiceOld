@@ -94,7 +94,6 @@ func (n NotificationRepository) GetNotificationById(ctx context.Context, id stri
 		notification.AssignTo = nil
 	}
 	return notification, nil
-
 }
 
 func (n NotificationRepository) GetAllNotifications(ctx context.Context) ([]models.Notification, error) {
