@@ -1,11 +1,39 @@
-postgresql:
-  username:
-  password:
-  host:
-  port:
-  database:
+level:
+prod:
+  postgresql:
+    username:
+    password:
+    host:
+    port:
+    database:
 
-keycloak:
-  url:
-  realm:
-  fullCertsPath:
+  keycloak:
+    url:
+    realm:
+    fullCertsPath:
+
+test:
+  postgresql:
+    username:
+    password:
+    host:
+    port:
+    database:
+
+  keycloak:
+    url:
+    realm:
+    fullCertsPath:
+
+dev:
+  postgresql:
+    username:
+    password:
+    host:
+    port:
+    database:
+
+  keycloak:
+    url:
+    realm:
+    fullCertsPath:

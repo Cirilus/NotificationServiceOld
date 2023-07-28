@@ -8,7 +8,6 @@ import (
 
 func main() {
 	cfg := config.GetConfig()
-
 	app := server.NewApp(cfg)
 
 	err := app.Run("8000")
