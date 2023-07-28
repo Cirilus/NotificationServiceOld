@@ -129,6 +129,7 @@ func getPublicKeyFromCacheOrBackend(keyId string, config Config) (KeyEntry, erro
 	if err != nil {
 		return KeyEntry{}, err
 	}
+	// TODO try using the defer func () to catch the error
 	defer resp.Body.Close()
 	var certs Certs
 	err = json.NewDecoder(resp.Body).Decode(&certs)

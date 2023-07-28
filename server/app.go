@@ -36,6 +36,8 @@ type App struct {
 	accountUC account.UseCase
 
 	conf *config.Config
+
+	router *gin.Engine
 }
 
 // postgresql://postgres:postgres@5.42.75.12:5432/postgresql
@@ -70,6 +72,7 @@ func NewApp(cfg *config.Config) *App {
 // @schemes http
 func (a *App) Run(port string) error {
 	router := gin.Default()
+	a.router = router
 	router.Use(
 		gin.Recovery(),
 		gin.Logger(),
@@ -122,4 +125,8 @@ func (a *App) Run(port string) error {
 	defer shutdown()
 
 	return a.httpServer.Shutdown(ctx)
+}
+
+func (a *App) GetRouter() *gin.Engine {
+	return a.router
 }
