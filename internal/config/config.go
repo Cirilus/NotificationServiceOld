@@ -19,7 +19,7 @@ type Configs struct {
 var instance *Configs
 var once sync.Once
 
-func GetConfig() *Config {
+func GetConfig(level Level) *Config {
 	once.Do(func() {
 		logrus.Info("read application config")
 		instance = &Configs{}
@@ -30,7 +30,11 @@ func GetConfig() *Config {
 		}
 	})
 
-	switch instance.Level {
+	if level == "" {
+		level = instance.Level
+	}
+
+	switch level {
 	case Prod:
 		return &instance.Prod
 	case Test:

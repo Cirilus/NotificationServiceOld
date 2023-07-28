@@ -7,13 +7,13 @@ import (
 	accountrepo "Notifications/internal/account/repository/postgres"
 	accountusecase "Notifications/internal/account/usecase"
 	"Notifications/internal/config"
+	keycloak2 "Notifications/internal/middlewares/keycloak"
 	"Notifications/internal/notification"
 	notificationhttp "Notifications/internal/notification/delivery/http"
 	notificationrepo "Notifications/internal/notification/repository/postgres"
 	notificationusecase "Notifications/internal/notification/usecase"
 	"Notifications/pkg/client/postgresql"
 	"Notifications/pkg/health_check"
-	"Notifications/pkg/keycloak"
 	"context"
 	"fmt"
 	"github.com/gin-contrib/cors"
@@ -83,7 +83,7 @@ func (a *App) Run(port string) error {
 
 	api := router.Group("/api")
 
-	keycloakConfig := keycloak.Config{
+	keycloakConfig := keycloak2.Config{
 		Url:                a.conf.Keycloak.Url,
 		Realm:              a.conf.Keycloak.Realm,
 		FullCertsPath:      a.conf.Keycloak.FullCertsPath,
@@ -91,11 +91,11 @@ func (a *App) Run(port string) error {
 	}
 
 	notificationApi := api.Group("/notification")
-	notificationApi.Use(keycloak.Auth(keycloak.AuthCheck(), keycloakConfig))
+	notificationApi.Use(keycloak2.Auth(keycloak2.AuthCheck(), keycloakConfig))
 	notificationhttp.RegisterHTTPEndpoints(notificationApi, a.notificationUC)
 
 	accountApi := api.Group("/account")
-	accountApi.Use(keycloak.Auth(keycloak.AuthCheck(), keycloakConfig))
+	accountApi.Use(keycloak2.Auth(keycloak2.AuthCheck(), keycloakConfig))
 	accounthttp.RegisterHTTPEndpoints(accountApi, a.accountUC)
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

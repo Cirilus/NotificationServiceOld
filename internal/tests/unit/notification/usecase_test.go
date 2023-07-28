@@ -1,4 +1,4 @@
-package tests
+package notification_test
 
 import (
 	"Notifications/internal/models"

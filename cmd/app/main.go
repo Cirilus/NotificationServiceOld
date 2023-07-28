@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	cfg := config.GetConfig()
+	cfg := config.GetConfig("")
 	app := server.NewApp(cfg)
 
 	err := app.Run("8000")

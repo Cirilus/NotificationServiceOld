@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"Notifications/internal/account"
+	"Notifications/internal/middlewares/keycloak"
 	"Notifications/internal/models"
-	"Notifications/pkg/keycloak"
 	"context"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
