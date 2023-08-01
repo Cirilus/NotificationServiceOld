@@ -40,7 +40,6 @@ type App struct {
 	router *gin.Engine
 }
 
-// postgresql://postgres:postgres@5.42.75.12:5432/postgresql
 func NewApp(cfg *config.Config) *App {
 	logrus.Info("Connecting to db")
 	db, err := postgresql.New(fmt.Sprintf("postgresql://%s:%s@%s:%s?sslmode=disable",
